@@ -18,15 +18,16 @@ import lombok.experimental.SuperBuilder;
 public class Producto {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-incremental
     private Long id;
-    @Column (nullable = false)
+
+    @Column(nullable = false) // Columna obligatoria
     private String nombre;
-    
-    private double precio;
-    
-    private int cantidad;
-    
+
+    private double precio; // Precio del producto
+    private int cantidad; // Cantidad en stock
+
+    // Constructor adicional para agregar producto
     public Producto(String nombre, double precio, int cantidad) {
         this.nombre = nombre;
         this.precio = precio;
@@ -42,7 +43,4 @@ public class Producto {
                 ", cantidad=" + cantidad +
                 '}';
     }
-
-    
-
 }

@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface ProductoRepository extends JpaRepository<Producto, Long> {
-    List<Producto> findAllByOrderByPrecioAsc(); // Para filtrar por precio ascendente
-    List<Producto> findAllByOrderByPrecioDesc(); // Para filtrar por precio descendente
-    List<Producto> findAllByOrderByNombreAsc(); // Para ordenar alfabéticamente
+    List<Producto> findAllByOrderByPrecioAsc(); // Filtrar por precio ascendente
+    List<Producto> findAllByOrderByPrecioDesc(); // Filtrar por precio descendente
+    List<Producto> findAllByOrderByNombreAsc(); // Ordenar alfabéticamente
 }
