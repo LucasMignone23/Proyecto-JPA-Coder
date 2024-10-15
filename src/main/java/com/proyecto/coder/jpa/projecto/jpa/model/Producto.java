@@ -1,10 +1,6 @@
 package com.proyecto.coder.jpa.projecto.jpa.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,6 +22,10 @@ public class Producto {
 
     private double precio; // Precio del producto
     private int cantidad; // Cantidad en stock
+
+    @ManyToOne
+    @JoinColumn(name = "categoria_id")
+    private Categoria categoria; // Relación ManyToOne con Categoria
 
     // Constructor adicional para agregar producto
     public Producto(String nombre, double precio, int cantidad) {

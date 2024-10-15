@@ -1,23 +1,23 @@
 package com.proyecto.coder.jpa.projecto.jpa.services;
 
-import org.springframework.stereotype.Service;
-
+import com.proyecto.coder.jpa.projecto.jpa.exception.ProductoNoEncontradoException;
 import com.proyecto.coder.jpa.projecto.jpa.model.Producto;
 import com.proyecto.coder.jpa.projecto.jpa.repository.ProductoRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class ProductoService {
 
-    private final ProductoRepository productoRepository; // Repositorio de productos
+    private final ProductoRepository productoRepository;
 
     public ProductoService(ProductoRepository productoRepository) {
-        this.productoRepository = productoRepository; // Inyección de dependencias
+        this.productoRepository = productoRepository;
     }
 
     public List<Producto> listarTodos() {
-        return productoRepository.findAll(); // Devuelve todos los productos
+        return productoRepository.findAll(); // Retorna todos los productos
     }
 
     public List<Producto> filtrarPorPrecioAsc() {
@@ -32,36 +32,32 @@ public class ProductoService {
         return productoRepository.findAllByOrderByNombreAsc(); // Filtra alfabéticamente
     }
 
-    public Producto agregarProducto(Producto producto) {
-        return productoRepository.save(producto); // Persiste el producto
+    public Producto buscarPorId(Long id) {
+        return productoRepository.findById(id)
+            .orElseThrow(() -> new ProductoNoEncontradoException(id)); // Manejo de excepción
     }
+    
 
-    public void eliminarProducto(Long id) {
-        productoRepository.deleteById(id); // Elimina el producto por ID
+    public Producto agregarProducto(Producto producto) {
+        return productoRepository.save(producto); // Guarda un nuevo producto
     }
 
     public Producto actualizarProducto(Long id, Producto nuevoProducto) {
-        return productoRepository.findById(id) // Actualiza el producto
+        return productoRepository.findById(id)
             .map(producto -> {
                 producto.setNombre(nuevoProducto.getNombre());
                 producto.setPrecio(nuevoProducto.getPrecio());
                 producto.setCantidad(nuevoProducto.getCantidad());
                 return productoRepository.save(producto);
             })
-            .orElseThrow(() -> new RuntimeException("Producto no encontrado")); // Manejo de errores
+            .orElseThrow(() -> new ProductoNoEncontradoException(id)); // Lanzar excepción personalizada
     }
 
-    // Nuevo método para facturación
-    public String realizarFacturacion(Long id, int cantidadSolicitada) {
-        Producto producto = productoRepository.findById(id)
-            .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
-        
-        if (producto.getCantidad() < cantidadSolicitada) {
-            return "Error: No hay suficiente stock para completar la venta."; // Mensaje de error
-        }
+    public void eliminarProducto(Long id) {
+        productoRepository.deleteById(id); // Elimina un producto por ID
+    }
 
-        producto.setCantidad(producto.getCantidad() - cantidadSolicitada); // Descuenta del stock
-        productoRepository.save(producto); // Actualiza el producto en la base de datos
-        return "Facturación exitosa. Total a pagar: " + (producto.getPrecio() * cantidadSolicitada); // Mensaje de éxito
+    public List<Producto> buscarPorNombre(String nombre) {
+        return productoRepository.findByNombre(nombre); // Busca productos por nombre
     }
 }

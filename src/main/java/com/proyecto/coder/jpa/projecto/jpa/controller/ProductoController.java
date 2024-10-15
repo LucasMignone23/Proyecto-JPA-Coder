@@ -13,12 +13,19 @@ import java.util.List;
 public class ProductoController {
 
     @Autowired
-    private ProductoService productoService; // Inyección de dependencias del servicio
+    private ProductoService productoService;
 
     @GetMapping
     public List<Producto> listarTodos() {
         return productoService.listarTodos(); // Devuelve la lista de productos
     }
+
+    @GetMapping("/{id}")
+public ResponseEntity<Producto> obtenerProductoPorId(@PathVariable Long id) {
+    Producto producto = productoService.buscarPorId(id); // Método implementado en el servicio
+    return ResponseEntity.ok(producto); // Devuelve el producto encontrado
+}
+
 
     @PostMapping
     public ResponseEntity<Producto> agregarProducto(@RequestBody Producto producto) {
@@ -27,18 +34,20 @@ public class ProductoController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Producto> actualizarProducto(@PathVariable Long id, @RequestBody Producto nuevoProducto) {
-        return ResponseEntity.ok(productoService.actualizarProducto(id, nuevoProducto)); // Actualiza un producto existente
+        return ResponseEntity.ok(productoService.actualizarProducto(id, nuevoProducto)); // Actualiza un producto
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> eliminarProducto(@PathVariable Long id) {
         productoService.eliminarProducto(id); // Elimina un producto por ID
-        return ResponseEntity.noContent().build(); // Respuesta sin contenido
+        return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/facturacion/{id}")
-    public ResponseEntity<String> realizarFacturacion(@PathVariable Long id, @RequestParam int cantidad) {
-        String resultado = productoService.realizarFacturacion(id, cantidad); // Llama al método de facturación
-        return ResponseEntity.ok(resultado); // Devuelve el resultado de la facturación
+    @GetMapping("/search")
+    public ResponseEntity<List<Producto>> buscarPorNombre(@RequestParam String nombre) {
+        List<Producto> productos = productoService.buscarPorNombre(nombre); // Buscar productos por nombre
+        return ResponseEntity.ok(productos);
     }
+
+    
 }
